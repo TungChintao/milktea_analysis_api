@@ -26,6 +26,16 @@ def brands_shop_num():
     pass
 
 
+# 获取35个城市列表
+def get_citys_list():
+    city_list = []
+    results = Shop.query.all()
+    for i in results:
+        if i.city not in city_list:
+            city_list.append(i.city)
+    return city_list
+
+
 # 获取城市地图中店铺散点图信息
 def shop_details(city_name):
     dict1 = {'status': 200, 'msg': "Success"}
