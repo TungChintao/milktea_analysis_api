@@ -1,6 +1,7 @@
-from app.views import city_bp
 from . import make_resp
-from utils.analysis import get_citys_list, get_fiveshops_num, get_percentage, get_five_shops, shop_details, get_fifty_shops, fiveshops_address
+from app.views import city_bp
+from flask import redirect, request
+from app.utils.city_analysis import *
 
 
 @city_bp.route('/')
@@ -9,7 +10,7 @@ def index():
 
 
 # 生成城市地图信息
-@city_bp.route('/generate_map/citys', methods=['POST'])
+@city_bp.route('/generate_map/cities', methods=['POST'])
 def generate_map():
     getjson = request.get_json()
     city_name = getjson.get("city_name")
@@ -88,11 +89,10 @@ def generate_map():
 
 
 # 生成地图店铺信息
-@city_bp.route('/shop/details', methods=['POST'])
-def get_shop_details():
-    myjson = request.get_json()
-    city_name = myjson.get("city_name")
-    city_list = get_citys_list()
+@city_bp.route('/shop/details/<city>', methods=['GET'])
+def get_shop_details(city):
+    city_name = city
+    city_list = get_cities_list()
     list1 = shop_details(city_name)
     if city_name in city_list:
         return make_resp(data=list1)
@@ -101,11 +101,10 @@ def get_shop_details():
 
 
 # 图表二：该城市中  各品牌店铺数量与在店铺总数占比
-@city_bp.route('/shop/percentage', methods=['POST'])
-def get_shop_percentange():
-    myjson = request.get_json()
-    city_name = myjson.get("city_name")
-    if city_name not in get_citys_list():
+@city_bp.route('/shop/percentage/<city>', methods=['GET'])
+def get_shop_percentange(city):
+    city_name = city
+    if city_name not in get_cities_list():
         return make_resp(data=[], status=404, message="fail")
     else:
         title_list = []
@@ -124,11 +123,11 @@ def get_shop_percentange():
 
 
 # 表三：主要品牌区域分布
-@city_bp.route('/shop/address', methods=['POST'])
-def get_shop_address():
+@city_bp.route('/shop/address/<city>', methods=['GET'])
+def get_shop_address(city):
     myjson = request.get_json()
-    city_name = myjson.get("city_name")
-    if city_name not in get_citys_list():
+    city_name = city
+    if city_name not in get_cities_list():
         return make_resp(data=[], status=404, message="fail")
     else:
         title_list = get_five_shops(city_name)
