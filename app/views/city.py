@@ -1,5 +1,6 @@
 from app.views import city_bp
 from . import make_resp
+from utils.analysis import get_citys_list, get_fiveshops_num, get_percentage, get_five_shops, shop_details, get_fifty_shops, fiveshops_address
 
 
 @city_bp.route('/')
@@ -8,7 +9,7 @@ def index():
 
 
 # 生成城市地图信息
-@app.route('/generate_map/citys', methods=['POST'])
+@city_bp.route('/generate_map/citys', methods=['POST'])
 def generate_map():
     getjson = request.get_json()
     city_name = getjson.get("city_name")
@@ -83,31 +84,30 @@ def generate_map():
     elif city_name == '苏州':
         return redirect("https://geo.datav.aliyun.com/areas_v3/bound/320500_full.json")
     else:
-        return jsonify(msg="请求失败！没有这个城市!", statu=404)
+        return make_resp(data=[], status=404, message="fail")
 
 
 # 生成地图店铺信息
-@app.route('/shop/details', methods=['POST'])
+@city_bp.route('/shop/details', methods=['POST'])
 def get_shop_details():
     myjson = request.get_json()
     city_name = myjson.get("city_name")
     city_list = get_citys_list()
+    list1 = shop_details(city_name)
     if city_name in city_list:
-        return shop_details(city_name)
+        return make_resp(data=list1)
     else:
-        return jsonify(msg="没有这个城市信息！", status=404)
+        return make_resp(data=[], status=404, message="fail")
 
 
 # 图表二：该城市中  各品牌店铺数量与在店铺总数占比
-@app.route('/shop/percentage', methods=['POST'])
+@city_bp.route('/shop/percentage', methods=['POST'])
 def get_shop_percentange():
     myjson = request.get_json()
     city_name = myjson.get("city_name")
     if city_name not in get_citys_list():
-        return jsonify(msg="没有这个城市信息！", status=404)
+        return make_resp(data=[], status=404, message="fail")
     else:
-        dict1 = {'status': 200, 'msg': "Success"}
-        json_data = json.loads(json.dumps(dict1))
         title_list = []
         title_num_list = []
         fifty_shops = get_fifty_shops(city_name)
@@ -120,27 +120,23 @@ def get_shop_percentange():
             'num_list': title_num_list,
             'percentage_list': percentage_list
         }
-        json_data['data'] = data_dict
-        city_list = get_citys_list()
-        return json_data
+        return make_resp(data=data_dict)
 
 
 # 表三：主要品牌区域分布
-@app.route('/shop/address', methods=['POST'])
+@city_bp.route('/shop/address', methods=['POST'])
 def get_shop_address():
     myjson = request.get_json()
     city_name = myjson.get("city_name")
     if city_name not in get_citys_list():
-        return jsonify(msg="没有这个城市信息！", status=404)
+        return make_resp(data=[], status=404, message="fail")
     else:
-        dict1 = {'status': 200, 'msg': "Success"}
-        json_data = json.loads(json.dumps(dict1))
         title_list = get_five_shops(city_name)
         address_list = fiveshops_address(city_name)
         address_shopnum_list = get_fiveshops_num(city_name, title_list, address_list)
-        json_data['data'] = {
+        data_dict = {
             'addresses': address_list,
             'titles': title_list,
             'shops_num': address_shopnum_list
         }
-        return json_data
+        return make_resp(data=data_dict)
