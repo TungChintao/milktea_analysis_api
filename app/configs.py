@@ -14,6 +14,7 @@ class DevelopmentConfig(BaseConfig):
     """
     开发环境配置类
     """
+    DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URI")
     pass
 
@@ -33,7 +34,7 @@ class ProductionConfig(BaseConfig):
 
 
 # 配置类字典，根据传递的key选择不同的配置类
-configs = {
+config_map = {
     'development': DevelopmentConfig,
     'testing': TestingConfig,
     'production': ProductionConfig

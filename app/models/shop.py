@@ -6,6 +6,7 @@ class Shop(Base):
     """
     奶茶店铺数据表模型类
     """
+    __tablename__ = 'milktea_shop'
     shopid = db.Column(db.String(20), primary_key=True)
     title = db.Column(db.String(35), nullable=False)
     avgprice = db.Column(db.Float)
@@ -17,6 +18,7 @@ class Shop(Base):
     isMain = db.Column(db.Boolean)
     address = db.Column(db.String(45))
     goods = db.relationship(
-        'good', cascade='all, delete-orphan'
+        'Good', cascade='all, delete-orphan'
     )
+
 

@@ -1,9 +1,7 @@
 # app/__init__.py
 from flask import Flask
-
-from app.configs import configs
+from app.configs import config_map
 from app.libs.extensions import db, migrate
-from app.models import Shop, Good
 
 
 def create_app(key="development"):
@@ -11,9 +9,10 @@ def create_app(key="development"):
     工厂函数
     """
     app = Flask(__name__)
-    app.config.from_object(configs[key])
+    app.config.from_object(config_map[key])
     register_extensions(app)
     register_blueprints(app)
+    # db.create_all()
     return app
 
 

@@ -1,6 +1,9 @@
 from app.views import city_bp
+from . import make_resp
 
 
 @city_bp.route('/')
 def index():
-    return 'city'
+    return make_resp('city')
+
+
