@@ -10,10 +10,10 @@ def index():
 
 
 # 生成地图店铺信息
-@city_db.route('/shop/details/<city>', methods=['GET'])
+@city_bp.route('/shop/details/<city>', methods=['GET'])
 def get_shop_details(city):
     city_name = city
-    city_list = get_citys_list()
+    city_list = get_cities_list()
     list1 = shop_details(city_name)
     if city_name in city_list:
         return make_resp(data=list1)
@@ -22,10 +22,10 @@ def get_shop_details(city):
 
 
 # 图表二：该城市中  各品牌店铺数量与在店铺总数占比
-@city_db.route('/shop/percentage/<city>', methods=['GET'])
+@city_bp.route('/shop/percentage/<city>', methods=['GET'])
 def get_shop_percentange(city):
     city_name = city
-    if city_name not in get_citys_list():
+    if city_name not in get_cities_list():
         return make_resp(data=[], status=404, message="fail")
     else:
         title_list = []
@@ -52,10 +52,10 @@ def get_shop_percentange(city):
 
 
 # 表三：主要品牌区域分布
-@city_db.route('/shop/address/<city>', methods=['GET'])
+@city_bp.route('/shop/address/<city>', methods=['GET'])
 def get_shop_address(city):
     city_name = city
-    if city_name not in get_citys_list():
+    if city_name not in get_cities_list():
         return make_resp(data=[], status=404, message="fail")
     else:
         # 品牌列表
