@@ -112,11 +112,11 @@ def fiveshops_address(city_name):
 # 获取各个品牌的店铺数量在各个区域的列表
 def get_fiveshops_num(city_name, title, address):
     list2 = []
-    for t in title:
+    for a in address:
         list1 = []
-        shops = Shop.query.filter_by(city=city_name, title=t, isMain=1)
-        for a in address:
-            num = shops.filter_by(address=a).count()
+        shops = Shop.query.filter_by(city=city_name, address=a, isMain=1)
+        for t in title:
+            num = shops.filter_by(title=t).count()
             list1.append(num)
         list2.append(list1)
     return list2
