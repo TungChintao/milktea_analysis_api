@@ -11,32 +11,6 @@ def get_cities_list():
     return city_list
 
 
-# 获取城市地图中店铺散点图信息
-def shop_details(city_name):
-    dict1 = {'status': 200, 'msg': "Success"}
-    json_data = json.loads(json.dumps(dict1))
-    json_list = []
-    # 获取数据库中该城市的所有店铺的元组
-    shops = Shop.query.filter(Shop.city == city_name, Shop.isMain == 1, Shop.avgprice > 0)
-    # 遍历所有元组，获取（店铺名称、经纬度、所在区域、人均消费）等信息，并整理成字典，把该字典插入data列表中
-    for shop in shops:
-        get_title = shop.title
-        get_latitude = shop.latitude
-        get_longitude = shop.longitude
-        get_avgprice = "%.2f" % shop.avgprice
-        get_address = shop.address
-        shop1 = {
-            'title': get_title,
-            'latitude': get_latitude,
-            'longitude': get_longitude,
-            'avgprice': get_avgprice,
-            'address': get_address
-        }
-        json_list.append(shop1)
-    json_data['data'] = json_list
-    return json_data
-
-
 # 获取该城市中的主要品牌
 def get_title_list(city_name):
     title_list = []
@@ -83,6 +57,29 @@ def get_percentage(city_name):
         p = "%.2f" % p
         percentage_list.append(p)
     return percentage_list
+
+
+# 获取城市地图中店铺散点图信息
+def shop_details(city_name):
+    json_list = []
+    # 获取数据库中该城市的所有店铺的元组
+    shops = Shop.query.filter(Shop.city == city_name, Shop.isMain == 1, Shop.avgprice > 0)
+    # 遍历所有元组，获取（店铺名称、经纬度、所在区域、人均消费）等信息，并整理成字典，把该字典插入data列表中
+    for shop in shops:
+        get_title = shop.title
+        get_latitude = shop.latitude
+        get_longitude = shop.longitude
+        get_avgprice = "%.2f" % shop.avgprice
+        get_address = shop.address
+        shop1 = {
+            'title': get_title,
+            'latitude': get_latitude,
+            'longitude': get_longitude,
+            'avgprice': get_avgprice,
+            'address': get_address
+        }
+        json_list.append(shop1)
+    return json_list
 
 
 # 获取前五品牌的名称列表
