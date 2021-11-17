@@ -1,11 +1,7 @@
 import pandas as pd
+from sqlalchemy import func, desc
 from app.models import Shop, Good
-
-
-
-def city_shop_num(city):
-    shop_num = Shop.query.filter_by(city=city, isMain=True).count()
-    return {'city': city, 'shopnum': shop_num}
+from app.libs.extensions import db
 
 
 def brand_shop_num(brand):
@@ -14,10 +10,9 @@ def brand_shop_num(brand):
 
 def cities_shop_num():
     resp_data = []
-    query_data = Shop.query.group_by(Shop.city)
-    for d in query_data:
-        city = d.city
-        resp_data.append(city_shop_num(city))
+    query_data = db.session.query(Shop.city, func.count(Shop.shopid)).filter(Shop.isMain == 1).group_by("city").all()
+    for data in query_data:
+        resp_data.append({'city': data[0], 'shopnum': data[1]})
     resp_data = sorted(resp_data, key=lambda data: data["shopnum"], reverse=True)
     return resp_data
 
@@ -28,24 +23,17 @@ def brands_shop_num():
 
 
 # 获取35个城市的前五十品牌及其店铺数量
-def get_top_fifty_brands_and_shopnum():
-    brands_list = []
-    # 获取数据库中该城市的所有品牌的元组
-    shops = Shop.query.filter_by(isMain=1)
-    for shop in shops:
-        get_title = shop.title
-        if get_title not in brands_list:
-            brands_list.append(get_title)
-    num_list = []
-    for brand in brands_list:
-        num = Shop.query.filter_by(title=brand, isMain=1).count()
-        num_list.append(num)
-    a = dict(zip(brands_list, num_list))
-    a = sorted(a.items(), key=lambda x: x[1], reverse=True)
-    result = []
-    for n in range(50):
-        result.append(a[n])
-    return result
+def get_top_brands():
+    query_data = db.session.query(Shop.title, func.count(Shop.title)).filter(Shop.isMain == 1).group_by(
+        "title").limit().all()
+    resp_data = []
+    for data in query_data:
+        resp_data.append({
+            'title': data[0],
+            'num': data[1]
+        })
+    resp_data = sorted(resp_data, key=lambda data: data['num'], reverse=True)
+    return resp_data
 
 
 # 获取35个城市前50品牌及其所有产品价格
@@ -72,8 +60,7 @@ def get_top_fifty_brands_and_goods():
             'goods': good_list
         }
         brand_list.append(brand_dict)
-    result ={
+    result = {
         'brands': brand_list
     }
     return result
-

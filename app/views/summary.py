@@ -19,19 +19,9 @@ def index():
 
 
 # 全国前50热门品牌以及店铺数量
-@summary_bp.route("/top/fifty/brands", methods=['GET'])
+@summary_bp.route("/brands/top50", methods=['GET'])
 def top_fifty_brands():
-    fifty_brands = get_top_fifty_brands_and_shopnum()
-    list1 = []
-    for n in range(50):
-        a = {
-            'title': fifty_brands[n][0],
-            'num': fifty_brands[n][1]
-        }
-        list1.append(a)
-    data = {
-        'brands': list1
-    }
+    data = get_top_brands()
     return make_resp(data=data)
 
 
