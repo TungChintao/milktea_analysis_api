@@ -18,5 +18,27 @@ def index():
     return make_resp(data)
 
 
+# 全国前50热门品牌以及店铺数量
+@summary_bp.route("/top/fifty/brands", methods=['GET'])
+def top_fifty_brands():
+    fifty_brands = get_top_fifty_brands_and_shopnum()
+    list1 = []
+    for n in range(50):
+        a = {
+            'title': fifty_brands[n][0],
+            'num': fifty_brands[n][1]
+        }
+        list1.append(a)
+    data = {
+        'brands': list1
+    }
+    return make_resp(data=data)
+
+
+# 全国前50品牌及产品价格
+@summary_bp.route("/top/fifty/brands/goods", methods=['GET'])
+def top_fifty_brands_goods():
+    data = get_top_fifty_brands_and_goods()
+    return make_resp(data=data)
 
 
