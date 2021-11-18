@@ -1,4 +1,4 @@
-import pandas as pd
+
 from sqlalchemy import func, desc, distinct
 from app.models import Shop, Good
 from app.libs.extensions import db
