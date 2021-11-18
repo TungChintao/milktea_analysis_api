@@ -1,5 +1,6 @@
 # app/__init__.py
 from flask import Flask
+from flask_cors import CORS
 from app.configs import config_map
 from app.libs.extensions import db, migrate
 
@@ -9,6 +10,7 @@ def create_app(key="development"):
     工厂函数
     """
     app = Flask(__name__)
+    CORS(app)
     app.config.from_object(config_map[key])
     register_extensions(app)
     register_blueprints(app)
