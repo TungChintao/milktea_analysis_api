@@ -28,23 +28,7 @@ def get_shop_percentange(city):
     if city_name not in get_cities_list():
         return make_resp(data=[], status=404, message="fail")
     else:
-        title_list = []
-        title_num_list = []
-        fifty_shops = get_fifty_shops(city_name)
-        for shop in fifty_shops:
-            title_list.append(shop[0])
-            title_num_list.append(shop[1])
-        percentage_list = get_percentage(city_name)
-        results_list = []
-        for n in range(50):
-            result_data = {
-                'title': title_list[n],
-                'num_and_percentage': {
-                    'num': title_num_list[n],
-                    'percentage': percentage_list[n]
-                }
-            }
-            results_list.append(result_data)
+        results_list = get_city_brands_top50(city_name)
         data_dict = {
             'titles': results_list
         }
@@ -58,27 +42,8 @@ def get_shop_address(city):
     if city_name not in get_cities_list():
         return make_resp(data=[], status=404, message="fail")
     else:
-        # 品牌列表
-        title_list = get_five_shops(city_name)
-        # 地区列表
-        address_list = fiveshops_address(city_name)
-        # 店铺数量列表
-        address_shopnum_list = get_fiveshops_num(city_name, title_list, address_list)
-        address_dict_array = []
-        for n in range(len(address_list)):
-            shops_list = []
-            for m in range(5):
-                shop_dict = {
-                    'shopnum': address_shopnum_list[n][m],
-                    'title': title_list[m]
-                }
-                shops_list.append(shop_dict)
-            address_dict = {
-                'address': address_list[n],
-                'shops': shops_list
-            }
-            address_dict_array.append(address_dict)
+        result_list = get_brands_top5_address(city_name)
         data_dict = {
-            'addresses': address_dict_array
+            'addresses': result_list
         }
         return make_resp(data=data_dict)
