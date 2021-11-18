@@ -1,5 +1,5 @@
 import pandas as pd
-from sqlalchemy import func, desc
+from sqlalchemy import func, desc, distinct
 from app.models import Shop, Good
 from app.libs.extensions import db
 
@@ -24,8 +24,7 @@ def brands_shop_num():
 
 # 获取35个城市的前五十品牌及其店铺数量
 def get_top_brands():
-    query_data = db.session.query(Shop.title, func.count(Shop.title)).filter(Shop.isMain == 1).group_by(
-        "title").limit().all()
+    query_data = db.session.query(Shop.title, func.count(Shop.title)).filter(Shop.isMain == 1).group_by("title").all()
     resp_data = []
     for data in query_data:
         resp_data.append({
@@ -33,34 +32,30 @@ def get_top_brands():
             'num': data[1]
         })
     resp_data = sorted(resp_data, key=lambda data: data['num'], reverse=True)
-    return resp_data
+    return resp_data[0:50]
 
 
 # 获取35个城市前50品牌及其所有产品价格
-def get_top_fifty_brands_and_goods():
-    a = get_top_fifty_brands_and_shopnum()
-    id_list = []
-    for i in a:
-        shop = Shop.query.filter_by(title=i[0], isMain=1, record=1).first()
-        id_list.append(shop.shopid)
-    brand_list = []
-    for i in range(50):
+def get_top_brands_goods():
+    top_brands = get_top_brands()
+    resp_data = []
+    for brand in top_brands:
         good_list = []
-        goods = Good.query.filter_by(shopid=id_list[i])
-        for g in goods:
-            good = g.good
-            price = g.price
-            good_dict = {
-                'good': good,
-                'price': "%.2f" % price
-            }
-            good_list.append(good_dict)
-        brand_dict = {
-            'title': a[i][0],
+        title = brand['title']
+        query_data = db.session.query(distinct(Good.good), Good.price).filter(Shop.shopid == Good.shopid,
+                                                                              Shop.isMain == 1,
+                                                                              Shop.record == 1,
+                                                                              Shop.title == title).all()
+        for data in query_data:
+            good_list.append({
+                'good': data[0],
+                'price': data[1],
+            })
+        resp_data.append({
+            'title': title,
             'goods': good_list
-        }
-        brand_list.append(brand_dict)
-    result = {
-        'brands': brand_list
+        })
+    resp_data = {
+        'brands': resp_data
     }
-    return result
+    return resp_data
