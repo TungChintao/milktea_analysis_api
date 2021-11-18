@@ -1,6 +1,5 @@
 from . import make_resp
 from app.views import city_bp
-from flask import redirect, request
 from app.utils.city_analysis import *
 
 

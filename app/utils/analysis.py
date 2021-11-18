@@ -1,5 +1,5 @@
 
-from sqlalchemy import func, desc, distinct
+from sqlalchemy import func, distinct
 from app.models import Shop, Good
 from app.libs.extensions import db
 
@@ -24,7 +24,7 @@ def brands_shop_num():
 
 # 获取35个城市的前五十品牌及其店铺数量
 def get_top_brands():
-    query_data = db.session.query(Shop.title, func.count(Shop.title)).filter(Shop.isMain == 1).group_by("title").all()
+    query_data = db.session.query(Shop.title, func.count(Shop.title)).filter(Shop.isMain == 1).group_by("title").limit(50).all()
     resp_data = []
     for data in query_data:
         resp_data.append({
@@ -32,7 +32,7 @@ def get_top_brands():
             'num': data[1]
         })
     resp_data = sorted(resp_data, key=lambda data: data['num'], reverse=True)
-    return resp_data[0:50]
+    return resp_data
 
 
 # 获取35个城市前50品牌及其所有产品价格

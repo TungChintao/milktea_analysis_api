@@ -30,6 +30,7 @@ class ProductionConfig(BaseConfig):
     """
     生产环境配置类
     """
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URI")
     pass
 
 
