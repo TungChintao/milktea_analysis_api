@@ -26,9 +26,9 @@ def top_fifty_brands():
 
 
 # 全国前50品牌及产品价格
-@summary_bp.route("/top/fifty/brands/goods", methods=['GET'])
+@summary_bp.route("/brands/goods/top50", methods=['GET'])
 def top_fifty_brands_goods():
-    data = get_top_fifty_brands_and_goods()
+    data = get_top_brands_goods()
     return make_resp(data=data)
 
 
