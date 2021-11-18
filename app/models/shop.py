@@ -17,6 +17,7 @@ class Shop(Base):
     city = db.Column(db.String(20), nullable=False)
     isMain = db.Column(db.Boolean)
     address = db.Column(db.String(45))
+    record = db.Column(db.Boolean)
     goods = db.relationship(
         'Good', cascade='all, delete-orphan'
     )
