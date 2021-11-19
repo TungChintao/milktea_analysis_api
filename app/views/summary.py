@@ -13,6 +13,12 @@ def heat():
     return make_resp('summary')
 
 
+@summary_bp.route('/milktea/heat', methods=['GET'])
+def get_heat():
+    data = get_milktea_heat()
+    return make_resp(data)
+
+
 @summary_bp.route('/map/<city>', methods=['GET'])
 def get_map(city):
     data = generate_map(city)
