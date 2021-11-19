@@ -1,6 +1,7 @@
 from app.views import summary_bp
 from . import make_resp
 from app.utils.analysis import *
+import json
 # 获取参数
 # 检验参数
 # 业务逻辑处理
@@ -10,6 +11,12 @@ from app.utils.analysis import *
 @summary_bp.route('/', methods=['GET'])
 def heat():
     return make_resp('summary')
+
+
+@summary_bp.route('/map/<city>', methods=['GET'])
+def get_map(city):
+    data = generate_map(city)
+    return make_resp(data)
 
 
 @summary_bp.route('/shopnum', methods=['GET'])
