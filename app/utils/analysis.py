@@ -81,12 +81,55 @@ def generate_map(city):
         return requests.get("https://geo.datav.aliyun.com/areas_v3/bound/320500_full.json").json()
 
 
+# 根据经纬度获取省份名称
+def get_province(latitude, longitude):
+    addstr = str(latitude) + ',' + str(longitude)
+    items = {'location': addstr, 'ak': 'ZTK2ho9ePvLTuEuUSmfsFfpKcOGbWCMZ', 'output': 'json'}
+    res = requests.get('http://api.map.baidu.com/reverse_geocoding/v3/', params=items)
+    location = res.json()['result']['addressComponent']
+    province = location.get('province')
+    if province[-1] == '区':
+        if province[0] == '内':
+            province = province[0:3]
+        else:
+            province = province[0:2]
+    else:
+        province = province[:-1]
+    return province
+
+
 def cities_shop_num():
     resp_data = []
     query_data = db.session.query(Shop.city, func.count(Shop.shopid)).filter(Shop.isMain == 1).group_by("city").all()
     for data in query_data:
         resp_data.append({'city': data[0], 'shopnum': data[1]})
     resp_data = sorted(resp_data, key=lambda data: data["shopnum"], reverse=True)
+    return resp_data
+
+
+# 获取各省份奶茶热度
+def get_milktea_heat():
+    check_list = []
+    resp_data = []
+    citys = cities_shop_num()
+    total = 0
+    for i in citys:
+        if i['shopnum'] > total:
+            total = i['shopnum']
+    for i in citys:
+        city = i['city']
+        num = i['shopnum']
+        heat = num / total
+        heat = float("%.2f" % heat)
+        coordinate = db.session.query(Shop.latitude, Shop.longitude).filter(Shop.city == city).first()
+        latitude, longitude = coordinate[0], coordinate[1]
+        province = get_province(latitude, longitude)
+        if province not in check_list:
+            check_list.append(province)
+            resp_data.append({
+                'province': province,
+                'heat': heat
+            })
     return resp_data
 
 
