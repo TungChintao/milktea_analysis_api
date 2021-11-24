@@ -10,9 +10,10 @@ if os.path.exists(dotenv_path):
 # 必须卸载dotenv加载完环境变量之后
 from app import create_app
 
-app = create_app()
+app = create_app("production")
 # manager = Manager(app)
 # manager.add_command("db", MigrateCommand)
-app.run()
+if __name__ == "__main__":
+    app.run()
 
 

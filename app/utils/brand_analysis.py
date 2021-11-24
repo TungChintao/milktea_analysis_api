@@ -1,5 +1,5 @@
-from sqlalchemy import func, distinct
-from app.models import Shop, Good
+from sqlalchemy import func
+from app.models import Shop
 from app.libs.extensions import db
 
 
@@ -67,7 +67,6 @@ def get_brand_score(brand):
         score += 0.5
 
     return resp_data, min_score, max_score, avg_score
-
 
 
 

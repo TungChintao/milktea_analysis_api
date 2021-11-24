@@ -4,6 +4,7 @@ from flask import Blueprint, jsonify
 summary_bp = Blueprint('summary', __name__)
 brand_bp = Blueprint('brand', __name__)
 city_bp = Blueprint('city', __name__)
+word_bp = Blueprint('word', __name__)
 
 
 def make_resp(data, status=200, message="success"):
@@ -16,4 +17,5 @@ def make_resp(data, status=200, message="success"):
 from . import summary
 from . import brand
 from . import city
+from . import word
 

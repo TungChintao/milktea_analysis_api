@@ -4,10 +4,6 @@ from app.libs.extensions import db
 import requests
 
 
-def brand_shop_num(brand):
-    pass
-
-
 def generate_map(city):
     if city == '武汉':
         return requests.get("https://geo.datav.aliyun.com/areas_v3/bound/420100_full.json").json()
@@ -175,3 +171,4 @@ def get_top_brands_goods():
         'brands': resp_data
     }
     return resp_data
+

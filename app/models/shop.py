@@ -1,3 +1,4 @@
+# app/models/shop.py
 from app.models.base import Base
 from app.libs.extensions import db
 

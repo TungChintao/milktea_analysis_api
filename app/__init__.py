@@ -33,7 +33,9 @@ def register_blueprints(app):
     from app.views import summary_bp
     from app.views import brand_bp
     from app.views import city_bp
+    from app.views import word_bp
     app.register_blueprint(summary_bp, url_prefix='/api/summary')
     app.register_blueprint(brand_bp, url_prefix='/api/brand')
     app.register_blueprint(city_bp, url_prefix='/api/city')
+    app.register_blueprint(word_bp, url_prefix='/api/wordcloud')
 
