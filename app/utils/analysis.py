@@ -2,6 +2,7 @@ from sqlalchemy import func, distinct
 from app.models import Shop, Good
 from app.libs.extensions import db
 import requests
+province_dict = {'武汉': '湖北', '南京': '江苏', '深圳': '广东', '广州': '广东', '西安': '陕西', '石家庄': '河北', '长春': '吉林', '北京': '北京', '哈尔滨': '黑龙江', '上海': '上海', '沈阳': '辽宁', '西宁': '青海', '银川': '宁夏', '郑州': '河南', '乌鲁木齐': '新疆', '呼和浩特': '内蒙古', '海口': '海南', '贵阳': '贵州', '南昌': '江西', '济南': '山东', '昆明': '云南', '兰州': '甘肃', '杭州': '浙江', '合肥': '安徽', '南宁': '广西', '长沙': '湖南', '重庆': '重庆', '太原': '山西', '成都': '四川', '福州': '福建', '拉萨': '西藏', '三亚': '海南', '厦门': '福建', '天津': '天津', '苏州': '江苏'}
 
 
 def brand_shop_num(brand):
@@ -81,23 +82,6 @@ def generate_map(city):
         return requests.get("https://geo.datav.aliyun.com/areas_v3/bound/320500_full.json").json()
 
 
-# 根据经纬度获取省份名称
-def get_province(latitude, longitude):
-    addstr = str(latitude) + ',' + str(longitude)
-    items = {'location': addstr, 'ak': 'ZTK2ho9ePvLTuEuUSmfsFfpKcOGbWCMZ', 'output': 'json'}
-    res = requests.get('http://api.map.baidu.com/reverse_geocoding/v3/', params=items)
-    location = res.json()['result']['addressComponent']
-    province = location.get('province')
-    if province[-1] == '区':
-        if province[0] == '内':
-            province = province[0:3]
-        else:
-            province = province[0:2]
-    else:
-        province = province[:-1]
-    return province
-
-
 def cities_shop_num():
     resp_data = []
     query_data = db.session.query(Shop.city, func.count(Shop.shopid)).filter(Shop.isMain == 1).group_by("city").all()
@@ -121,9 +105,7 @@ def get_milktea_heat():
         num = i['shopnum']
         heat = num / total
         heat = float("%.2f" % heat)
-        coordinate = db.session.query(Shop.latitude, Shop.longitude).filter(Shop.city == city).first()
-        latitude, longitude = coordinate[0], coordinate[1]
-        province = get_province(latitude, longitude)
+        province = province_dict['city']
         if province not in check_list:
             check_list.append(province)
             resp_data.append({
