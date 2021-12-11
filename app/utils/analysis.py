@@ -101,7 +101,7 @@ def get_milktea_heat():
         num = i['shopnum']
         heat = num / total
         heat = float("%.2f" % heat)
-        province = province_dict['city']
+        province = province_dict[city]
         if province not in check_list:
             check_list.append(province)
             resp_data.append({
